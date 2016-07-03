@@ -240,6 +240,8 @@ protected Q_SLOTS:
     void onRefreshDevices();
     void onCreateNewPartitionTable();
     void onCreateNewVolumeGroup();
+    void onRemoveVolumeGroup();
+    void onResizeVolumeGroup();
     void onExportPartitionTable();
     void onImportPartitionTable();
 
