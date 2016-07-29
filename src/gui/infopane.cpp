@@ -20,7 +20,9 @@
 
 #include <core/device.h>
 #include <core/diskdevice.h>
+#include <core/volumemanagerdevice.h>
 #include <core/lvmdevice.h>
+#include <core/mddevice.h>
 #include <core/partition.h>
 
 #include <fs/filesystem.h>
@@ -196,6 +198,14 @@ void InfoPane::showDevice(Qt::DockWidgetArea area, const Device& d)
         createLabels(i18nc("@label device", "Total PE:"),QString::number(lvm.totalPE()), cols(area), x, y);
         createLabels(i18nc("@label device", "Allocated PE:"), QString::number(lvm.allocatedPE()), cols(area), x, y);
         createLabels(i18nc("@label device", "Free PE:"), QString::number(lvm.freePE()), cols(area), x, y);
+    } else if (d.type() == Device::RAID_Device) {
+        const MdDevice& raid = dynamic_cast<const MdDevice&>(d);
+        createLabels(i18nc("@label device", "Volume Type:"), QStringLiteral("RAID"), cols(area), x, y);
+        createLabels(i18nc("@label device", "RAID Level:"), QStringLiteral("RAID") + QString::number(MdDevice::getRaidLevel(raid.deviceNode())), cols(area), x, y);
+        createLabels(i18nc("@label device", "Array Size:"), Capacity::formatByteSize(MdDevice::getArraySize(raid.deviceNode())), cols(area), x, y);
+        createLabels(i18nc("@label device", "Chunk Size:"), Capacity::formatByteSize(MdDevice::getChunkSize(raid.deviceNode())), cols(area), x, y);
+        createLabels(i18nc("@label device", "Total Chunk:"), QString::number(MdDevice::getTotalChunk(raid.deviceNode())), cols(area), x, y);
+        createLabels(i18nc("@label device", "Device List:"), raid.prettyDeviceNodeList(), cols(area), x, y);
     }
 }
 
